@@ -9,12 +9,12 @@ use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\MarketplaceController;
 
-// Public Routes
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
+    // Public Routes
+    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/login', [AuthController::class, 'login']);
 
-// Protected Routes (Require Authentication)
-Route::middleware('auth:sanctum')->group(function () {
+    // Protected Routes (Require Authentication)
+    Route::middleware('auth:sanctum')->group(function () {
     // User Management
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/users/profile', [AuthController::class, 'profile']);
@@ -59,12 +59,21 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::patch('/transactions/{id}', [TransactionController::class, 'update']); // Update a transaction's status
 });
 
-    // Notification System
-    Route::get('/notifications', [NotificationController::class, 'index']);
-    Route::patch('/notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead']);
+    // Notification Routes
+    Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/notifications', [NotificationController::class, 'index']); // List notifications for the user
+    Route::get('/notifications/{id}', [NotificationController::class, 'show']); // View a specific notification
+    Route::patch('/notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead']); // Mark notification as read
+    });
+
+    // Admin Route to send notifications
+    Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
+    Route::post('/notifications', [NotificationController::class, 'store']); // Send custom notification
+    });
+
 
     // Marketplace
     Route::get('/marketplace', [MarketplaceController::class, 'index']);
     Route::get('/marketplace/{id}', [MarketplaceController::class, 'show']);
-});
+    });
 
