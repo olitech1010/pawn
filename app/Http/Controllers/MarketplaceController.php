@@ -25,7 +25,14 @@ class MarketplaceController extends Controller
     // List an item in the marketplace
     public function listItem(Request $request, $itemId)
     {
+        $validated = $request->validate([
+            'price' => 'required|numeric|min:0'
+        ]);
+
         $item = Item::findOrFail($itemId);
+        if ($item->user_id !== $request->user()->id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
 
         $marketplaceItem = MarketplaceItem::create([
             'item_id' => $item->id,

@@ -9,7 +9,12 @@ class ItemController extends Controller
 {
     public function index(Request $request)
     {
-        return response()->json($request->user()->items()->with(['category', 'subCategory'])->get());
+        return response()->json(
+            $request->user()
+                ->items()
+                ->with(['category', 'subCategory'])
+                ->paginate(15)
+        );
     }
 
     public function store(Request $request)
