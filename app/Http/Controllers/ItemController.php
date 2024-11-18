@@ -7,9 +7,9 @@ use Illuminate\Http\Request;
 
 class ItemController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json(auth()->user()->items()->with(['category', 'subCategory'])->get());
+        return response()->json($request->user()->items()->with(['category', 'subCategory'])->get());
     }
 
     public function store(Request $request)
@@ -25,21 +25,21 @@ class ItemController extends Controller
             'photos.*' => 'string',
         ]);
 
-        $item = auth()->user()->items()->create($validated);
+        $item = $request->user()->items()->create($validated);
 
         return response()->json(['message' => 'Item submitted successfully.', 'item' => $item], 201);
     }
 
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        $item = auth()->user()->items()->with(['category', 'subCategory'])->findOrFail($id);
+        $item = $request->user()->items()->with(['category', 'subCategory'])->findOrFail($id);
 
         return response()->json($item);
     }
 
     public function update(Request $request, $id)
     {
-        $item = auth()->user()->items()->findOrFail($id);
+        $item = $request->user()->items()->findOrFail($id);
 
         $validated = $request->validate([
             'title' => 'nullable|string',
@@ -55,9 +55,9 @@ class ItemController extends Controller
         return response()->json(['message' => 'Item updated successfully.', 'item' => $item]);
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        $item = auth()->user()->items()->findOrFail($id);
+        $item = $request->user()->items()->findOrFail($id);
         $item->delete();
 
         return response()->json(['message' => 'Item deleted successfully.']);

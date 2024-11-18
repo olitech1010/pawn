@@ -4,28 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Item extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     protected $fillable = [
-        'user_id',
         'title',
         'description',
         'category_id',
         'sub_category_id',
-        'condition',
         'estimated_value',
-        'approved_value',
-        'status',
-        'rebuy_deadline',
-        'photos',
-    ];
-
-    protected $casts = [
-        'photos' => 'array', // Automatically handle JSON conversion
+        'condition',
+        'photos'
     ];
 
     public function user()
@@ -40,8 +31,6 @@ class Item extends Model
 
     public function subCategory()
     {
-        return $this->belongsTo(Category::class, 'sub_category_id');
+        return $this->belongsTo(SubCategory::class);
     }
-
-
 }

@@ -15,17 +15,14 @@ Route::post('/login', [AuthController::class, 'login']);
 
 // Protected Routes (Require Authentication)
 Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('items', ItemController::class);
+    Route::apiResource('notifications', NotificationController::class);
+    Route::apiResource('transactions', TransactionController::class);
+
     // User Management
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/users/profile', [AuthController::class, 'profile']);
     Route::patch('/users/profile', [AuthController::class, 'updateProfile']);
-
-    // Item Management
-    Route::post('/items', [ItemController::class, 'store']);
-    Route::get('/items', [ItemController::class, 'index']);
-    Route::get('/items/{id}', [ItemController::class, 'show']);
-    Route::patch('/items/{id}', [ItemController::class, 'update']);
-    Route::delete('/items/{id}', [ItemController::class, 'destroy']);
 
     // Category Management
     Route::get('/categories', [CategoryController::class, 'index']);
@@ -37,17 +34,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/categories/{categoryId}/subcategories', [SubCategoryController::class, 'store']);
     Route::patch('/subcategories/{id}', [SubCategoryController::class, 'update']);
     Route::delete('/subcategories/{id}', [SubCategoryController::class, 'destroy']);
-
-    // Transaction Management
-    Route::get('/transactions', [TransactionController::class, 'index']); // List user transactions
-    Route::get('/transactions/{id}', [TransactionController::class, 'show']); // View a specific transaction
-    Route::post('/transactions', [TransactionController::class, 'store']); // Create a new transaction
-    Route::patch('/transactions/{id}', [TransactionController::class, 'update']); // Update a transaction's status
-
-    // Notification Management
-    Route::get('/notifications', [NotificationController::class, 'index']); // List notifications for the user
-    Route::get('/notifications/{id}', [NotificationController::class, 'show']); // View a specific notification
-    Route::patch('/notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead']); // Mark notification as read
 
     // Marketplace Routes
     Route::get('/marketplace', [MarketplaceController::class, 'index']);

@@ -7,24 +7,24 @@ use Illuminate\Http\Request;
 
 class NotificationController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         // Fetch all notifications for the authenticated user
-        $notifications = auth()->user()->notifications()->get();
+        $notifications = $request->user()->notifications()->get();
         return response()->json($notifications);
     }
 
-    public function show($id)
+    public function show(Request $request, $id)
     {
         // Fetch a specific notification for the authenticated user
-        $notification = auth()->user()->notifications()->findOrFail($id);
+        $notification = $request->user()->notifications()->findOrFail($id);
         return response()->json($notification);
     }
 
-    public function markAsRead($id)
+    public function markAsRead(Request $request, $id)
     {
         // Mark a specific notification as read
-        $notification = auth()->user()->notifications()->findOrFail($id);
+        $notification = $request->user()->notifications()->findOrFail($id);
         $notification->update(['status' => 'Read']);
         return response()->json($notification);
     }

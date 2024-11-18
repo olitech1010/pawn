@@ -13,12 +13,12 @@ return new class extends Migration
     public function up()
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
             $table->string('phone_number')->nullable();
-            $table->enum('identification_type', ['Ghana Card', 'Passport', 'Driver\'s License'])->nullable();
+            $table->enum('identification_type', ['Ghana Card', 'Passport', 'Drivers License'])->nullable();
             $table->string('identification_number')->unique()->nullable();
             $table->rememberToken();
             $table->timestamps();

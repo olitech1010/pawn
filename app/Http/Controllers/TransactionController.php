@@ -10,7 +10,7 @@ class TransactionController extends Controller
     public function index(Request $request)
     {
         // List all transactions for the authenticated user
-        $query = Transaction::where('user_id', auth()->id());
+        $query = Transaction::where('user_id', $request->user()->id);
 
         // Filter by transaction type (optional)
         if ($request->has('transaction_type')) {
