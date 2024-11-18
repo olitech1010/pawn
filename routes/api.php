@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\SubCategoryController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\MarketplaceController;
@@ -38,6 +39,19 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/admin/categories', [CategoryController::class, 'store']);
     Route::patch('/admin/categories/{id}', [CategoryController::class, 'update']);
     Route::delete('/admin/categories/{id}', [CategoryController::class, 'destroy']);
+
+    Route::middleware('auth:sanctum')->group(function () {
+        // Category routes
+        Route::get('/categories', [CategoryController::class, 'index']);
+        Route::post('/categories', [CategoryController::class, 'store']);
+        Route::patch('/categories/{id}', [CategoryController::class, 'update']);
+        Route::delete('/categories/{id}', [CategoryController::class, 'destroy']);
+
+        // SubCategory routes
+        Route::post('/categories/{categoryId}/subcategories', [SubCategoryController::class, 'store']);
+        Route::patch('/subcategories/{id}', [SubCategoryController::class, 'update']);
+        Route::delete('/subcategories/{id}', [SubCategoryController::class, 'destroy']);
+    });
 
     // Transaction Management
     Route::get('/transactions', [TransactionController::class, 'index']);

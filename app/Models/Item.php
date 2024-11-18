@@ -42,4 +42,6 @@ class Item extends Model
     {
         return $this->belongsTo(Category::class, 'sub_category_id');
     }
+
+
 }
