@@ -21,16 +21,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::patch('/users/profile', [AuthController::class, 'updateProfile']);
 
     // Item Management
-    Route::post('/items', [ItemController::class, 'store']);
-    Route::get('/items', [ItemController::class, 'index']);
-    Route::get('/items/{id}', [ItemController::class, 'show']);
-    Route::patch('/items/{id}', [ItemController::class, 'update']);
-
     Route::middleware('auth:sanctum')->group(function () {
     Route::post('/items', [ItemController::class, 'store']);
     Route::get('/items', [ItemController::class, 'index']);
     Route::get('/items/{id}', [ItemController::class, 'show']);
     Route::patch('/items/{id}', [ItemController::class, 'update']);
+    Route::delete('/items/{id}', [ItemController::class, 'destroy']);
+
 });
 
 
@@ -53,9 +50,14 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/subcategories/{id}', [SubCategoryController::class, 'destroy']);
     });
 
-    // Transaction Management
-    Route::get('/transactions', [TransactionController::class, 'index']);
-    Route::get('/transactions/{id}', [TransactionController::class, 'show']);
+
+    // Transaction Routes
+    Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/transactions', [TransactionController::class, 'index']); // List user transactions
+    Route::get('/transactions/{id}', [TransactionController::class, 'show']); // View a specific transaction
+    Route::post('/transactions', [TransactionController::class, 'store']); // Create a new transaction
+    Route::patch('/transactions/{id}', [TransactionController::class, 'update']); // Update a transaction's status
+});
 
     // Notification System
     Route::get('/notifications', [NotificationController::class, 'index']);

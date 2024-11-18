@@ -29,14 +29,13 @@ class User extends Authenticatable
         return $this->hasMany(Item::class);
     }
 
+
+
     public function transactions()
     {
         return $this->hasMany(Transaction::class);
     }
 
-    public function items()
-{
-    return $this->hasMany(Item::class);
-}
+
 
 }

@@ -7,49 +7,45 @@ use Illuminate\Http\Request;
 
 class ItemController extends Controller
 {
+    public function index()
+    {
+        return response()->json(auth()->user()->items()->with(['category', 'subCategory'])->get());
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'category_id' => 'required|uuid',
-            'sub_category_id' => 'required|uuid',
+            'title' => 'required|string',
+            'description' => 'nullable|string',
+            'category_id' => 'required|uuid|exists:categories,id',
+            'sub_category_id' => 'required|uuid|exists:sub_categories,id',
+            'estimated_value' => 'required|numeric',
             'condition' => 'required|in:New,Like New,Good,Fair,Poor',
-            'estimated_value' => 'required|numeric|min:0',
             'photos' => 'nullable|array',
-            'photos.*' => 'string', // Ensure each photo is a valid path/URL
+            'photos.*' => 'string',
         ]);
 
-        $item = $request->user()->items()->create($validated);
+        $item = auth()->user()->items()->create($validated);
 
         return response()->json(['message' => 'Item submitted successfully.', 'item' => $item], 201);
     }
 
-    public function index(Request $request)
-    {
-        $items = $request->user()->items()->paginate(10);
-
-        return response()->json($items);
-    }
-
     public function show($id)
     {
-        $item = Item::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
+        $item = auth()->user()->items()->with(['category', 'subCategory'])->findOrFail($id);
 
         return response()->json($item);
     }
 
     public function update(Request $request, $id)
     {
-        $item = Item::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
+        $item = auth()->user()->items()->findOrFail($id);
 
         $validated = $request->validate([
-            'title' => 'string|max:255',
-            'description' => 'string',
-            'category_id' => 'uuid',
-            'sub_category_id' => 'uuid',
-            'condition' => 'in:New,Like New,Good,Fair,Poor',
-            'estimated_value' => 'numeric|min:0',
+            'title' => 'nullable|string',
+            'description' => 'nullable|string',
+            'estimated_value' => 'nullable|numeric',
+            'condition' => 'nullable|in:New,Like New,Good,Fair,Poor',
             'photos' => 'nullable|array',
             'photos.*' => 'string',
         ]);
@@ -57,5 +53,13 @@ class ItemController extends Controller
         $item->update($validated);
 
         return response()->json(['message' => 'Item updated successfully.', 'item' => $item]);
+    }
+
+    public function destroy($id)
+    {
+        $item = auth()->user()->items()->findOrFail($id);
+        $item->delete();
+
+        return response()->json(['message' => 'Item deleted successfully.']);
     }
 }
