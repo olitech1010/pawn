@@ -27,10 +27,10 @@ class TransactionController extends Controller
         return response()->json($transactions);
     }
 
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        // View a specific transaction
-        $transaction = Transaction::findOrFail($id);
+        $transaction = Transaction::where('user_id', $request->user()->id)
+            ->findOrFail($id);
         return response()->json($transaction);
     }
 
